@@ -1,6 +1,6 @@
 {
-    "parent": "item/bundle",
-    "textures": {
-        "layer0": "item/bundle_filled"
-    }
+  "parent": "compression_bag:item/compression_bag",
+  "textures": {
+    "layer0": "compression_bag:item/compression_bag_compressed"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "compressionbag",
+  "id": "compression_bag",
   "version": "${version}",
   "name": "CompressionBag",
   "description": "",
@@ -11,18 +11,18 @@
     "repo": "https://github.com/iMoonDay/CompressionBag"
   },
   "license": "MIT",
-  "icon": "assets/compressionbag/icon.png",
+  "icon": "assets/compression_bag/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "com.imoonday.compressionbag.client.CompressionBagClient"
+      "com.imoonday.compression_bag.CompressionBagClient"
     ],
     "main": [
-      "com.imoonday.compressionbag.CompressionBag"
+      "com.imoonday.compression_bag.CompressionBag"
     ]
   },
   "mixins": [
-    "compressionbag.mixins.json"
+    "compression_bag.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

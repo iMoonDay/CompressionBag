@@ -2,19 +2,19 @@ package com.imoonday.compression_bag;
 
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public class CompressionBagRecipe extends SpecialCraftingRecipe {
-    public CompressionBagRecipe(Identifier id, CraftingRecipeCategory category) {
+public class CompressionBagCompressRecipe extends SpecialCraftingRecipe {
+    public CompressionBagCompressRecipe(Identifier id, CraftingRecipeCategory category) {
         super(id, category);
     }
 
@@ -41,7 +41,7 @@ public class CompressionBagRecipe extends SpecialCraftingRecipe {
                 count++;
             }
         }
-        return bag != null && itemStack != null && count > 0;
+        return bag != null && itemStack != null && CompressionBagItem.canMerge(bag, itemStack) && count > 0;
     }
 
     @Override
@@ -67,18 +67,17 @@ public class CompressionBagRecipe extends SpecialCraftingRecipe {
                 count++;
             }
         }
-        if (bag != null && itemStack != null && count > 0) {
-            Optional<ItemStack> optionalItemStack = CompressionBagItem.getItem(bag);
-            if (optionalItemStack.isPresent()) {
-                ItemStack stack = optionalItemStack.get();
-                if (ItemStack.canCombine(stack, itemStack.copyWithCount(count))) {
-                    stack.increment(count);
-                    bag.getOrCreateNbt().put("Item", stack.writeNbt(new NbtCompound()));
+        if (bag != null && itemStack != null && CompressionBagItem.canMerge(bag, itemStack) && count > 0) {
+            Optional<Pair<ItemStack, Integer>> optional = CompressionBagItem.getItem(bag);
+            if (optional.isPresent()) {
+                ItemStack stack = optional.get().getLeft();
+                if (ItemStack.canCombine(stack, itemStack)) {
+                    CompressionBagItem.increment(bag, count);
                 } else {
                     return ItemStack.EMPTY;
                 }
-            } else {
-                bag.getOrCreateNbt().put("Item", itemStack.copyWithCount(count).writeNbt(new NbtCompound()));
+            } else if (!CompressionBagItem.setItem(bag, itemStack, count)) {
+                return ItemStack.EMPTY;
             }
             return bag;
         }
@@ -97,6 +96,6 @@ public class CompressionBagRecipe extends SpecialCraftingRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return CompressionBag.COMPRESSION_BAG_RECIPE;
+        return CompressionBag.COMPRESSION_BAG_COMPRESS_RECIPE;
     }
 }
