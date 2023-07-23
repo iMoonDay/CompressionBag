@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.collection.DefaultedList;
@@ -33,7 +34,11 @@ public class CompressionBagItem extends Item {
 
     @Override
     public Text getName(ItemStack stack) {
-        return getItem(stack).isPresent() ? getItem(stack).get().getLeft().getName().copy().append(super.getName(stack)) : super.getName(stack);
+        MutableText name = super.getName(stack).copy();
+        if (getItem(stack).isPresent()) {
+            name = name.append(": ").append(getItem(stack).get().getLeft().getName());
+        }
+        return name;
     }
 
     @Override
